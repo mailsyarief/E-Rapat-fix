@@ -13,6 +13,7 @@ use App\Rapat_User;
 use App\Attachment;
 use App\Notification;
 use App\Notifications\Message;
+use Illuminate\Notifications\Notifiable;
 
 class RapatController extends Controller
 {
@@ -49,20 +50,9 @@ class RapatController extends Controller
         //dd($idRapat);
 
         $id_user_update = DB::select('SELECT rapat_user.user_id FROM rapat_user WHERE rapat_user.rapat_id= '.$id.'');
-        //dd($id_user_update);
-            // for ($i=0; $i < $len_notulen ; $i++) { 
-            //     $peserta = User::find($request->notulen[$i]);
-            //     $peserta->notify(new Message($request->all()));
-            // }
 
         $len_user=count($id_user_update);
         
-        // for($i=0; $i<$len_user; $i++){
-        //     $user_update = User::find($id_user_update[$i]);
-        //     dd($user_update);
-        // }
-
-        //$id_user_update->notify(new Message($id_user_update));   
         return view('rapat.edit-rapat')->with('data', $data);
     }    
 
@@ -149,6 +139,11 @@ class RapatController extends Controller
         $id = $request->id_rapat;
         $editRapat = Rapat::find($id);
 
+        $id_user_update = DB::select('SELECT rapat_user.user_id FROM rapat_user WHERE rapat_user.rapat_id= '.$id.'');
+        //dd($id_user_update);
+        $len_user=count($id_user_update);
+        $users = Rapat_User::where('rapat_id', $request->id_rapat)->get();
+        $request['rapat_id'] = $request['id_rapat'];
         DB::beginTransaction();
         try {
             $editRapat->title = $request->title;
@@ -159,8 +154,15 @@ class RapatController extends Controller
             $editRapat->isprivate = $request->isprivate;
             $editRapat->save();
 
+            // $editRapat->sendClientAddedNotification($message);
 
             DB::commit();
+
+            foreach ($users as $user) {
+                $peserta = User::find($user->user_id);
+                $peserta->notify(new Message($request->all()));
+            }
+
         } catch (Exception $e) {
             DB::rollback();
         }
@@ -214,7 +216,7 @@ class RapatController extends Controller
                 $Rapat_User->peserta_aktif = 0;
                 $Rapat_User->save();
             }
-
+ 
             for ($i=0; $i < $len_peserta ; $i++) { 
                 $peserta = User::find($request->peserta[$i]);
                 $peserta->notify(new Message($request->all()));

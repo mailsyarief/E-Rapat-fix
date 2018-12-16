@@ -4,6 +4,9 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 //use Illuminate\Contracts\Auth\MustVerifyEmail;
+//
+use App\Notifications\Message;
+//
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -36,5 +39,10 @@ class User extends Authenticatable
     public function notifs(){
         return $this->hasMany('App\Notification', 'notifiable_id');
     }
-
+//
+    public function sendClientAddedNotification($message)
+    {
+        $this->notify(new Message($message));
+    }
+//
 }
