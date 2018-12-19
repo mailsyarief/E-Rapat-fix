@@ -46,6 +46,7 @@ Route::post('/switch-back', 'AdminController@switch_back');
 Route::get('/buat-rapat', 'RapatController@buat_rapat');
 Route::post('/new-rapat', 'RapatController@create');
 Route::get('/notulensi/{id}', 'RapatController@notulensi');
+Route::get('/view-rapat/{id}', 'RapatController@view_rapat');
 Route::get('/get-template/{id}', 'RapatController@get_template');
 Route::post('/autosave-notulensi', 'RapatController@autosave');
 Route::post('/manualsave-notulensi', 'RapatController@manualsave');

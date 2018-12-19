@@ -1,10 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-{{-- @if(Rapat::where('id', Input::get('id'))->exists()) --}}
+
 <?php 
-    //$id= $_GET['id'];
-    //$rapat = DB::table('rapats')->where('id','=',$rapat->id)->exists();
     $rapat = DB::table('rapats')->where('id','=',$id)->first();
 ?>
 @if($rapat)
