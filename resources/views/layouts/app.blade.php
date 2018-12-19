@@ -27,16 +27,22 @@
 <body onload="hidefield()" class="with-side-menu control-panel control-panel-compact @if(!Auth::check()) sidebar-hidden @endif ">
     <header class="site-header">
         <div class="container-fluid">
-            <a href="#" class="site-logo">
-            </a>
-    
+
             <button id="show-hide-sidebar-toggle" class="show-hide-sidebar">
                 <span>toggle menu</span>
             </button>
     
+            @auth
+            <a href="{{ url('/') }}" class="site-logo">
+                <img src="{{ asset('img/logo-its.png') }}">
+            </a>
+            @endauth
+
+
             <button class="hamburger hamburger--htla">
                 <span>toggle menu</span>
             </button>
+
             <div class="site-header-content">
                 <div class="site-header-content-in">
                     <div class="site-header-shown">
@@ -143,27 +149,6 @@
                               <form action="{{ url('/update-akunsaya') }}" method="POST">
                                 @csrf
                               <div class="modal-body">
-                                <input class="form-control" type="hidden" name="id" value="{{ Auth::user()->id }}">
-                                <div class="form-group">
-                                    <label class="m-2">Nama</label>
-                                    <input class="form-control" type="text" name="username" value="{{ Auth::user()->name }}">
-                                </div>
-                                <div class="form-group">
-                                    <label class="m-2">NIK</label>
-                                    <input class="form-control" type="text" name="nik" value="{{ Auth::user()->nik }}">
-                                </div>
-                                <div class="form-group">
-                                    <label class="m-2">Email</label>
-                                    <input class="form-control" type="text" name="email" value="{{ Auth::user()->email }}">
-                                </div>
-                                <div class="form-group">
-                                    <label class="m-2">Jabatan</label>
-                                    <select id="status" class="form-control" name="status">
-                                        <option value="Tenaga Pengajar" {{Auth::user()->level == "Tenaga Pengajar" ? 'selected' : '' }}>Tenaga Pengajar</option>
-                                        <option value="Dosen" {{Auth::user()->level == "Dosen" ? 'selected' : '' }}>Dosen</option>
-                                    </select>                                    
-                                </div>
-                                <hr>
                                 <div class="form-group">
                                     <label class="m-2">Reset Password</label>
                                     <input class="form-control" type="password" name="password" value="" minlength="6">
@@ -171,7 +156,7 @@
                               </div>
                               
                               <div class="modal-footer">
-                                <button type="submit" class="btn btn-success">Save</button>
+                                <button type="submit" class="btn btn-success">Edit</button>
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                               </div>
                               </form>

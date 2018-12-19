@@ -33,24 +33,27 @@
 	                    <th>Judul</th>
 	                    <th>Tanggal</th>
 	                    <th>Tag</th>
-	                    <th>Isi</th>
+	                    @if(Auth::user()->role==1)
+	                    	<th>Action</th>
+	                    @endif
 	                </tr>
 	            </thead>
-	                <tfoot>
-	                <tr>
-	                    <th>Judul</th>
-	                    <th>Tanggal</th>
-	                    <th>tag</th>
-	                    <th>Isi</th>
-	                </tr>
-	                </tfoot>
 	            <tbody>
 	                @foreach($data as $data)
 	                <tr>
-	                    <td><a href="{{ url('/notulensi/'. $data->id) }}">{{$data->title}}</a></td>                    
+	                    <td><a href="{{ url('/view-rapat/'. $data->id) }}">{{$data->title}}</a></td>                    
 	                    <td>{{$data->waktu}}</td>                    
 	                    <td>{{$data->tag}}</td>
-	                    <td>{{$data->isi}}</td>
+	                    @if(Auth::user()->role==1)
+	                    <td>
+	                        <form action="{{ url('/delete') }}" method="POST">
+	                            @csrf
+	                            <input type="hidden" name="user_id" value="{{Auth::id()}}">
+	                            <input type="hidden" name="rapat_id" value="{{$data->id}}">
+	                            <input type="submit" class="btn btn-sm btn-warning" value="Delete">
+	                        </form>
+	                    </td>
+	                    @endif
 	                </tr>
 	                @endforeach
 	            </tbody>

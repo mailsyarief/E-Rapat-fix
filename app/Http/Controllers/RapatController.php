@@ -32,6 +32,11 @@ class RapatController extends Controller
 
     public function edit_rapat($id){ 
 
+
+        if (!Rapat::find($id)) {
+            return redirect('/');
+        }
+
         if (Auth::id()!= Rapat::find($id)->creator_id) {
             return redirect('/');
         }
@@ -139,9 +144,6 @@ class RapatController extends Controller
         $id = $request->id_rapat;
         $editRapat = Rapat::find($id);
 
-        $id_user_update = DB::select('SELECT rapat_user.user_id FROM rapat_user WHERE rapat_user.rapat_id= '.$id.'');
-        //dd($id_user_update);
-        $len_user=count($id_user_update);
         $users = Rapat_User::where('rapat_id', $request->id_rapat)->get();
         $request['rapat_id'] = $request['id_rapat'];
         DB::beginTransaction();
@@ -157,12 +159,6 @@ class RapatController extends Controller
             // $editRapat->sendClientAddedNotification($message);
 
             DB::commit();
-
-            foreach ($users as $user) {
-                $peserta = User::find($user->user_id);
-                $peserta->notify(new Message($request->all()));
-            }
-
         } catch (Exception $e) {
             DB::rollback();
         }
@@ -259,12 +255,6 @@ class RapatController extends Controller
 
 
     public function notulensi($id){
-        // $data = [
-        //     $rapat = Rapat::find($id),
-        //     $peserta = Rapat_User::where('rapat_id',$id)->get(),
-        //     $notulensi = Rapat_User::where('peserta_aktif',1)->where('rapat_id',$id)->get(),
-        // ];
-
         $data = [
             'rapat' => Rapat::find($id),
             'notulen' => DB::select('SELECT DISTINCT rapat_user.peserta_aktif FROM rapat_user, rapats WHERE rapat_user.user_id ='. Auth::id() .' AND rapat_user.rapat_id ='.$id.''),            
@@ -280,6 +270,17 @@ class RapatController extends Controller
         
         // dd($data);
         return view('rapat.notulensi')->with('data', $data);
+    }
+
+
+    public function view_rapat($id){
+        $data = [
+            'rapat' => Rapat::find($id),
+            'notulen' => DB::select('SELECT DISTINCT rapat_user.peserta_aktif FROM rapat_user, rapats WHERE rapat_user.user_id ='. Auth::id() .' AND rapat_user.rapat_id ='.$id.''),            
+            'peserta' => DB::select('SELECT rapat_user.id, rapats.title, users.name, rapat_user.peserta_aktif FROM rapats, users, rapat_user WHERE rapat_user.user_id = users.id AND rapat_user.rapat_id = '.$id.' AND rapats.id = '.$id.'')
+        ];
+        // dd($data);
+        return view('rapat.viewonly')->with('data', $data);
     }
 
 

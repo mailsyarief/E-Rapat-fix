@@ -44,7 +44,7 @@
                         ?>
 
                         <div class="form-group row">
-                            <label for="status" class="col-md-4 col-form-label text-md-right">{{ __('Status') }}</label>
+                            <label for="status" class="col-md-4 col-form-label text-md-right">{{ __('Jabatan') }}</label>
                             
                             <div class="col-md-6">
                                 <select id="status" class="form-control{{ $errors->has('status')}}" name="status" onchange="showfield(this.options[this.selectedIndex].value)">
@@ -52,9 +52,8 @@
                                     <option value="{{$statuses->jabatan}}">{{$statuses->jabatan}}</option>
                                     @endforeach
                                     <option value="Other" >Lain-Lain</option>
-                                    
                                 </select>
-                                <div id="div1"><input class="form-control" type="text" name="status"/>                                  
+                                <div id="div1"><input class="form-control mt-1" type="text" name="status" placeholder="Jabatan" />                                  
                                 </div>
 
                                 @if ($errors->has('status'))
